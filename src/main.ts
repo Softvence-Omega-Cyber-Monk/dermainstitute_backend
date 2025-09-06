@@ -29,7 +29,7 @@ async function bootstrap() {
 
   // ✅ Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('My API') // API title
+    .setTitle('DERMA API') // API title
     .setDescription('API documentation for my NestJS project') // Description
     .setVersion('1.0') // Version
     .addBearerAuth() // Adds Authorization: Bearer token in Swagger
