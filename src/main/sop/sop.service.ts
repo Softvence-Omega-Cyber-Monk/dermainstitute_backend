@@ -39,9 +39,14 @@ export class SopService {
     }
   }
 
-  async findAll() {
+  async findAll(jurisdiction?:string,title?:string,status?:any) {
     try {
       return await this.prisma.sOP.findMany({
+        where: {
+          jurisdiction: jurisdiction ? { has: jurisdiction } : undefined,
+          title: title ? { contains: title } : undefined,
+          status: status ? { equals: status } : undefined,
+        },
         include: {
           protocolSteps: true,
           medications: true,

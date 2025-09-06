@@ -11,6 +11,7 @@ import { MailModule } from './main/mail/mail.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { CloudinaryService } from './main/cloudinary/cloudinary.service';
 import { SopModule } from './main/sop/sop.module';
+import { ReportModule } from './main/report/report.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SopModule } from './main/sop/sop.module';
     UserModule,
     MailModule,
     SopModule,
+    ReportModule,
   
   ],
   controllers: [AppController],

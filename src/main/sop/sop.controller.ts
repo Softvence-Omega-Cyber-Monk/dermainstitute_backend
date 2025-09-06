@@ -10,12 +10,13 @@ import {
   Delete,
   NotFoundException, // Import for 404 handling
   BadRequestException, // Import for 400 handling (less common here, but good practice)
-  InternalServerErrorException, // Import for 500 handling
+  InternalServerErrorException,
+  Query, // Import for 500 handling
 } from '@nestjs/common';
 import { SopService } from './sop.service';
 import { CreateSopDto } from './dto/create-sop.dto';
 import { UpdateSopDto } from './dto/update-sop.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('sop')
 @Controller('sop')
@@ -38,9 +39,30 @@ export class SopController {
   @Get()
   @ApiOperation({ summary: 'Retrieve all SOPs', description: 'Returns a list of all Standard Operating Procedures.' })
   @ApiOkResponse({ description: 'A list of SOPs.', isArray: true })
-  async findAll() {
+  @ApiQuery({
+    name:"jurisdiction",
+    required: false,
+    type:String,
+    description: 'Filter by jurisdiction'
+  })
+  @ApiQuery({
+    name:"status",
+    required: false,
+    type:String,
+    description: 'Filter by status'
+  })
+  @ApiQuery({ 
+    name: 'title', 
+    required: false, 
+    type: String, 
+    description: 'Search for SOPs by title using a partial match.' 
+  })
+  async findAll(
+    @Query('jurisdiction') jurisdiction?: string, 
+    @Query('title') title?: string,
+    @Query('status') status?: string){
     try {
-      return await this.sopService.findAll();
+      return await this.sopService.findAll(jurisdiction,title,status);
     } catch (error) {
       throw new InternalServerErrorException('Failed to retrieve SOPs.');
     }
