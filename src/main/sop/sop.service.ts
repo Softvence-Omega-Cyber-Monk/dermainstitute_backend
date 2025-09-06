@@ -14,7 +14,7 @@ export class SopService {
   async create(createSopDto: CreateSopDto) {
     try {
       const { protocolSteps, medications, oxygen, ...sopData } = createSopDto;
-      
+
       return await this.prisma.sOP.create({
         data: {
           ...sopData,
@@ -34,12 +34,12 @@ export class SopService {
         },
       });
     } catch (error) {
-      console.error(error); 
+      console.error(error);
       throw new Error('Failed to create SOP due to a database error.');
     }
   }
 
-  async findAll(jurisdiction?:string,title?:string,status?:any) {
+  async findAll(jurisdiction?: string, title?: string, status?: any) {
     try {
       return await this.prisma.sOP.findMany({
         where: {
@@ -102,7 +102,6 @@ export class SopService {
       if (oxygen) {
         updateData.oxygen = {
           update: {
-            
             where: { sopId: id },
             data: oxygen,
           },
@@ -136,7 +135,6 @@ export class SopService {
       });
       return deletedSop;
     } catch (error) {
-     
       if (error.code === 'P2025') {
         return null;
       }

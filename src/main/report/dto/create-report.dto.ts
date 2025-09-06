@@ -1,5 +1,11 @@
 // create-incident-report.dto.ts
-import { IsString, IsInt, IsOptional, IsEnum, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum Situation {
@@ -19,12 +25,18 @@ export class CreateIncidentReportDto {
   @IsString()
   incidentTitle: string;
 
-  @ApiProperty({ description: 'The procedure related to the incident.', required: false })
+  @ApiProperty({
+    description: 'The procedure related to the incident.',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   procedure?: string;
 
-  @ApiProperty({ description: 'The severity level of the incident.', required: false })
+  @ApiProperty({
+    description: 'The severity level of the incident.',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   severity?: string;
@@ -43,7 +55,10 @@ export class CreateIncidentReportDto {
   @IsString()
   descriptionOfIncident: string;
 
-  @ApiProperty({ enum: Situation, description: 'The situation level of the incident.' })
+  @ApiProperty({
+    enum: Situation,
+    description: 'The situation level of the incident.',
+  })
   @IsEnum(Situation)
   situation: Situation;
 
@@ -59,12 +74,21 @@ export class CreateIncidentReportDto {
   @IsString()
   lessonsLearned: string;
 
-  @ApiProperty({ description: 'Indicates if the report is a draft.', required: false, default: false })
+  @ApiProperty({
+    description: 'Indicates if the report is a draft.',
+    required: false,
+    default: false,
+  })
   @IsOptional()
   @IsBoolean()
   isDraft?: boolean;
 
-  @ApiProperty({ enum: Status, description: 'The status of the report.', required: false, default: 'Submitted' })
+  @ApiProperty({
+    enum: Status,
+    description: 'The status of the report.',
+    required: false,
+    default: 'Submitted',
+  })
   @IsOptional()
   @IsEnum(Status)
   status?: Status;

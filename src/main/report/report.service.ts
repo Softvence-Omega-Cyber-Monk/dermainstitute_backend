@@ -16,13 +16,15 @@ export class ReportService {
       return await this.prisma.incidentReport.create({
         data: {
           ...createReportDto,
-          situation: createReportDto.situation as Situation, 
+          situation: createReportDto.situation as Situation,
           status: createReportDto.status as Status,
         },
       });
     } catch (error) {
       console.error(error);
-      throw new Error('Failed to create incident report due to a database error.');
+      throw new Error(
+        'Failed to create incident report due to a database error.',
+      );
     }
   }
 
@@ -36,7 +38,7 @@ export class ReportService {
     if (title) {
       where.incidentTitle = {
         contains: title,
-        mode: 'insensitive'
+        mode: 'insensitive',
       };
     }
 

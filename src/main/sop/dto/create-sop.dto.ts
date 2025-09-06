@@ -1,5 +1,14 @@
 // create-sop.dto.ts
-import { IsString, IsArray, IsEnum, IsBoolean, IsOptional, IsNumber, ValidateNested, ArrayMinSize } from 'class-validator';
+import {
+  IsString,
+  IsArray,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  IsNumber,
+  ValidateNested,
+  ArrayMinSize,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -66,12 +75,20 @@ export class CreateSopDto {
   @IsString()
   title: string;
 
-  @ApiProperty({ description: 'List of jurisdictions where the SOP applies.', isArray: true, type: String })
+  @ApiProperty({
+    description: 'List of jurisdictions where the SOP applies.',
+    isArray: true,
+    type: String,
+  })
   @IsArray()
   @IsString({ each: true })
   jurisdiction: string[];
 
-  @ApiProperty({ description: 'List of tags for categorizing the SOP.', isArray: true, type: String })
+  @ApiProperty({
+    description: 'List of tags for categorizing the SOP.',
+    isArray: true,
+    type: String,
+  })
   @IsArray()
   @IsString({ each: true })
   tags: string[];
@@ -80,27 +97,45 @@ export class CreateSopDto {
   @IsString()
   overview: string;
 
-  @ApiProperty({ description: 'List of indications for using the SOP.', isArray: true, type: String })
+  @ApiProperty({
+    description: 'List of indications for using the SOP.',
+    isArray: true,
+    type: String,
+  })
   @IsArray()
   @IsString({ each: true })
   indications: string[];
 
-  @ApiProperty({ description: 'List of contraindications.', isArray: true, type: String })
+  @ApiProperty({
+    description: 'List of contraindications.',
+    isArray: true,
+    type: String,
+  })
   @IsArray()
   @IsString({ each: true })
   contraindications: string[];
 
-  @ApiProperty({ description: 'List of required equipment.', isArray: true, type: String })
+  @ApiProperty({
+    description: 'List of required equipment.',
+    isArray: true,
+    type: String,
+  })
   @IsArray()
   @IsString({ each: true })
   required_equipment: string[];
 
-  @ApiProperty({ enum: SOPStatus, description: 'The status of the SOP (e.g., Procedure, Emergence).' })
+  @ApiProperty({
+    enum: SOPStatus,
+    description: 'The status of the SOP (e.g., Procedure, Emergence).',
+  })
   @IsOptional()
   @IsEnum(SOPStatus)
   status?: SOPStatus;
 
-  @ApiProperty({ description: 'Indicates if the SOP is a draft.', default: true })
+  @ApiProperty({
+    description: 'Indicates if the SOP is a draft.',
+    default: true,
+  })
   @IsOptional()
   @IsBoolean()
   isDraft?: boolean;
@@ -110,21 +145,30 @@ export class CreateSopDto {
   @IsString()
   author?: string;
 
-  @ApiProperty({ type: [CreateProtocolStepDto], description: 'A list of protocol steps.' })
+  @ApiProperty({
+    type: [CreateProtocolStepDto],
+    description: 'A list of protocol steps.',
+  })
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => CreateProtocolStepDto)
   protocolSteps: CreateProtocolStepDto[];
 
-  @ApiProperty({ type: [CreateMedicationDto], description: 'A list of medications.' })
+  @ApiProperty({
+    type: [CreateMedicationDto],
+    description: 'A list of medications.',
+  })
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => CreateMedicationDto)
   medications: CreateMedicationDto[];
 
-  @ApiProperty({ type: CreateOxygenDto, description: 'Oxygen details for the protocol.' })
+  @ApiProperty({
+    type: CreateOxygenDto,
+    description: 'Oxygen details for the protocol.',
+  })
   @IsOptional()
   @ValidateNested()
   @Type(() => CreateOxygenDto)

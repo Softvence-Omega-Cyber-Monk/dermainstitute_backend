@@ -12,6 +12,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { CloudinaryService } from './main/cloudinary/cloudinary.service';
 import { SopModule } from './main/sop/sop.module';
 import { ReportModule } from './main/report/report.module';
+import { AdminModule } from './main/admin/admin.module';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ReportModule } from './main/report/report.module';
     MailModule,
     SopModule,
     ReportModule,
-  
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],

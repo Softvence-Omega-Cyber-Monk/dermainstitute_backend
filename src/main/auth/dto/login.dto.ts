@@ -40,5 +40,3 @@ export class LoginDTO {
   @IsString()
   password: string;
 }
-
-

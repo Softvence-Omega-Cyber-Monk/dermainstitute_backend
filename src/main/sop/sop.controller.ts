@@ -16,7 +16,16 @@ import {
 import { SopService } from './sop.service';
 import { CreateSopDto } from './dto/create-sop.dto';
 import { UpdateSopDto } from './dto/update-sop.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 @ApiTags('sop')
 @Controller('sop')
@@ -24,52 +33,67 @@ export class SopController {
   constructor(private readonly sopService: SopService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new SOP', description: 'Creates a new Standard Operating Procedure record.' })
+  @ApiOperation({
+    summary: 'Create a new SOP',
+    description: 'Creates a new Standard Operating Procedure record.',
+  })
   @ApiCreatedResponse({ description: 'The SOP has been successfully created.' })
-  @ApiBody({ type: CreateSopDto, description: 'The data for creating a new SOP.' })
+  @ApiBody({
+    type: CreateSopDto,
+    description: 'The data for creating a new SOP.',
+  })
   async create(@Body() createSopDto: CreateSopDto) {
     try {
       return await this.sopService.create(createSopDto);
     } catch (error) {
       // Example of handling a potential known database/logic error (e.g., uniqueness constraint violation)
-      throw new InternalServerErrorException('Failed to create SOP due to an unexpected server issue.');
+      throw new InternalServerErrorException(
+        'Failed to create SOP due to an unexpected server issue.',
+      );
     }
   }
 
   @Get()
-  @ApiOperation({ summary: 'Retrieve all SOPs', description: 'Returns a list of all Standard Operating Procedures.' })
+  @ApiOperation({
+    summary: 'Retrieve all SOPs',
+    description: 'Returns a list of all Standard Operating Procedures.',
+  })
   @ApiOkResponse({ description: 'A list of SOPs.', isArray: true })
   @ApiQuery({
-    name:"jurisdiction",
+    name: 'jurisdiction',
     required: false,
-    type:String,
-    description: 'Filter by jurisdiction'
+    type: String,
+    description: 'Filter by jurisdiction',
   })
   @ApiQuery({
-    name:"status",
+    name: 'status',
     required: false,
-    type:String,
-    description: 'Filter by status'
+    type: String,
+    description: 'Filter by status',
   })
-  @ApiQuery({ 
-    name: 'title', 
-    required: false, 
-    type: String, 
-    description: 'Search for SOPs by title using a partial match.' 
+  @ApiQuery({
+    name: 'title',
+    required: false,
+    type: String,
+    description: 'Search for SOPs by title using a partial match.',
   })
   async findAll(
-    @Query('jurisdiction') jurisdiction?: string, 
+    @Query('jurisdiction') jurisdiction?: string,
     @Query('title') title?: string,
-    @Query('status') status?: string){
+    @Query('status') status?: string,
+  ) {
     try {
-      return await this.sopService.findAll(jurisdiction,title,status);
+      return await this.sopService.findAll(jurisdiction, title, status);
     } catch (error) {
       throw new InternalServerErrorException('Failed to retrieve SOPs.');
     }
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Retrieve a single SOP', description: 'Returns a single SOP by its ID.' })
+  @ApiOperation({
+    summary: 'Retrieve a single SOP',
+    description: 'Returns a single SOP by its ID.',
+  })
   @ApiParam({ name: 'id', description: 'The ID of the SOP.', type: String })
   @ApiOkResponse({ description: 'The requested SOP.' })
   @ApiResponse({ status: 404, description: 'SOP not found.' })
@@ -91,16 +115,28 @@ export class SopController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update an SOP', description: 'Updates an existing SOP record by ID.' })
-  @ApiParam({ name: 'id', description: 'The ID of the SOP to update.', type: String })
-  @ApiBody({ type: UpdateSopDto, description: 'The data for updating the SOP.' })
+  @ApiOperation({
+    summary: 'Update an SOP',
+    description: 'Updates an existing SOP record by ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the SOP to update.',
+    type: String,
+  })
+  @ApiBody({
+    type: UpdateSopDto,
+    description: 'The data for updating the SOP.',
+  })
   @ApiOkResponse({ description: 'The SOP has been successfully updated.' })
   @ApiResponse({ status: 404, description: 'SOP not found.' })
   async update(@Param('id') id: string, @Body() updateSopDto: UpdateSopDto) {
     try {
       const updatedSop = await this.sopService.update(id, updateSopDto);
       if (!updatedSop) {
-        throw new NotFoundException(`SOP with ID "${id}" cannot be updated because it was not found.`);
+        throw new NotFoundException(
+          `SOP with ID "${id}" cannot be updated because it was not found.`,
+        );
       }
       return updatedSop;
     } catch (error) {
@@ -116,8 +152,15 @@ export class SopController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete an SOP', description: 'Deletes an SOP record by ID.' })
-  @ApiParam({ name: 'id', description: 'The ID of the SOP to delete.', type: String })
+  @ApiOperation({
+    summary: 'Delete an SOP',
+    description: 'Deletes an SOP record by ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the SOP to delete.',
+    type: String,
+  })
   @ApiOkResponse({ description: 'The SOP has been successfully deleted.' })
   @ApiResponse({ status: 404, description: 'SOP not found.' })
   async remove(@Param('id') id: string) {
