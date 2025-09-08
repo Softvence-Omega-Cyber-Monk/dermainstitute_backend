@@ -27,18 +27,18 @@ async function bootstrap() {
     }),
   );
 
-  // ✅ Swagger configuration
+  // Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('DERMA API') // API title
-    .setDescription('API documentation for my NestJS project') // Description
-    .setVersion('1.0') // Version
-    .addBearerAuth() // Adds Authorization: Bearer token in Swagger
+    .setTitle('DERMA API')
+    .setDescription('API documentation for my NestJS project')
+    .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
-      persistAuthorization: true, // Keeps token after page refresh
+      persistAuthorization: true,
     },
   });
   app.use('/api/stripe/webhook', bodyParser.raw({ type: 'application/json' }));

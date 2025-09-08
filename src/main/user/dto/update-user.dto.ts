@@ -1,35 +1,76 @@
-import { IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString, validate, ValidateIf } from 'class-validator';
 
-export class UpdateUserDto {
+export class UpdateCredentialDto {
+  @ApiProperty({
+    description: 'The first name of the user.',
+    required: false,
+    example: 'John',
+  })
+  @IsOptional()
   @IsString()
-  fullName: string;
+  firstName?: string;
 
+  @ApiProperty({
+    description: 'The last name of the user.',
+    required: false,
+    example: 'Doe',
+  })
+  @IsOptional()
   @IsString()
-  userName: string;
-  @IsString()
-  coverPhoto: string;
-  @IsString()
-  profilePhoto: string;
-  @IsString()
-  bio: string;
-  @IsString()
-  website: string;
-  @IsString()
-  location: string;
+  lastName?: string;
 
-  verified: boolean;
+  @ApiProperty({
+    description: 'The phone number of the user.',
+    required: false,
+    example: '+1234567890',
+  })
+  @IsOptional()
   @IsString()
-  facebook: string;
+  phone?: string;
 
+  @ApiProperty({
+    description: 'The jurisdiction of the user.',
+    required: false,
+    example: 'New York',
+  })
+  @IsOptional()
   @IsString()
-  twitter: string;
+  jurisdiction?: string;
 
+  @ApiProperty({
+    description: 'The user’s institution.',
+    required: false,
+    example: 'University of XYZ',
+  })
+  @IsOptional()
   @IsString()
-  instagram: string;
+  institution?: string;
 
+  @ApiProperty({
+    description: 'The user’s department.',
+    required: false,
+    example: 'Computer Science',
+  })
+  @IsOptional()
   @IsString()
-  linkedin: string;
+  department?: string;
 
+  @ApiProperty({
+    description: 'The user’s specialization.',
+    required: false,
+    example: 'Data Analytics',
+  })
+  @IsOptional()
   @IsString()
-  xUrl: string;
+  specialization?: string;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'The image file to upload.',
+    required: false,
+  })
+  @ValidateIf(() => false)
+  image?: any;
 }

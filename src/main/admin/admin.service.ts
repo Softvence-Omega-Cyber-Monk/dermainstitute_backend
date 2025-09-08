@@ -9,14 +9,14 @@ export class AdminService {
   create(createAdminDto: CreateAdminDto) {
     return 'This action adds a new admin';
   }
-
   async findAll() {
     try {
-      const [totalCredentials, totalSOPs, totalIncidentReports] = await Promise.all([
-        this.prisma.credential.count(),
-        this.prisma.sOP.count(),
-        this.prisma.incidentReport.count(),
-      ]);
+      const [totalCredentials, totalSOPs, totalIncidentReports] =
+        await Promise.all([
+          this.prisma.credential.count(),
+          this.prisma.sOP.count(),
+          this.prisma.incidentReport.count(),
+        ]);
       return {
         totalCredentials,
         totalSOPs,
@@ -27,15 +27,36 @@ export class AdminService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
-  }
-
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  async recentActivity() {
+    try {
+      const [sopActivity, incidentReportActivity, credentialsActivity] = await Promise.all([
+        await this.prisma.sOP.findMany({
+          take: 2,
+          orderBy: {
+            createdAt: 'desc',
+          },
+          
+        }),
+        await this.prisma.incidentReport.findMany({
+          take: 2,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        await this.prisma.credential.findMany({
+          take: 2,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+      ]);
+      return {
+       sopActivity,
+       incidentReportActivity,
+       credentialsActivity
+      };
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 }
