@@ -10,18 +10,23 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { CreateIncidentReportDto } from './dto/create-report.dto';
-import { ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Situation } from './dto/create-report.dto';
+import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
+
 
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async create(@Body() createReportDto: CreateIncidentReportDto) {
     try {
       return await this.reportService.create(createReportDto);
@@ -80,7 +85,10 @@ export class ReportController {
     }
   }
 
+
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() updateReportDto: UpdateReportDto,
@@ -108,6 +116,8 @@ export class ReportController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async remove(@Param('id') id: string) {
     try {
       const deletedReport = await this.reportService.remove(id);

@@ -3,10 +3,9 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDTO } from './dto/login.dto';
-
 import { JwtService } from '@nestjs/jwt';
-import { randomBytes } from 'crypto';
 import { MailService } from '../mail/mail.service';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -92,65 +91,134 @@ export class AuthService {
 }
 
   //forget-password
-  async forgetPassword(email: string) {
-    const user = await this.prisma.credential.findUnique({
-      where: { email },
-    });
+ async forgetPassword(email: string) {
+  const user = await this.prisma.credential.findUnique({
+    where: { email },
+  });
 
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    const token = randomBytes(4).toString('hex');
-    await this.prisma.credential.update({
-      where: { email },
-      data: { resetToken: token },
-    });
-    const resetUrl = `${process.env.BASE_URL}reset-password?token=${token}`;
-    console.log(resetUrl);
-    await this.mailService.sendMail({
-      to: email,
-      subject: 'Password Reset',
-      html: `<h1>Password Reset Request</h1><p>your password change  OTP:${token}</p>`,
-      from: process.env.SMTP_USER as string,
-    });
-    return { message: 'Password reset email sent successfully' };
+  if (!user) {
+    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  async resetPassword(token: string, newPassword: string) {
-    const user = await this.prisma.credential.findFirst({
-      where: { resetToken: token },
-    });
+  // Generate a 4-digit OTP
+  const otp = Math.floor(1000 + Math.random() * 9000); 
 
-    if (!user) {
-      throw new HttpException(
-        'Invalid or expired token',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  // Set the expiration time to 10 minutes from now
+  const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+  // Update the user's record with the new OTP and its expiration time
+  await this.prisma.credential.update({
+    where: { email },
+    data: {
+      resetToken: otp,
+      resetTokenExpiresAt: otpExpiresAt,
+    },
+  });
 
-    await this.prisma.credential.update({
-      where: { id: user.id },
-      data: { password: hashedPassword, resetToken: null },
-    });
+  // Send the OTP to the user's email
+  await this.mailService.sendMail({
+    to: email,
+    subject: 'Password Reset',
+    html: `<h1>Password Reset Request</h1>:
+    Your OTP : ${otp}`,
+    from: process.env.SMTP_USER as string,
+  });
 
-    return { message: 'Password reset successful' };
+  return { message: 'Password reset email sent successfully' };
+}
+
+  async resetPassword(verificationToken: string, newPassword: string) {
+  const user = await this.prisma.credential.findFirst({
+    where: {
+      verificationToken: verificationToken,
+      verificationTokenExpiresAt: {
+        gt: new Date(),
+      },
+    },
+  });
+
+  if (!user) {
+    throw new HttpException('Invalid or expired verification token', HttpStatus.BAD_REQUEST);
   }
 
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  async verifyOTP(opt: string) {
-    try {
-      const isOTPValid = await this.prisma.credential.findFirst({
-        where: { resetToken: opt },
-      });
-      if (isOTPValid) {
-        return { message: 'OTP is valid' };
-      } else {
-        throw new HttpException('OTP is not valid', HttpStatus.BAD_REQUEST);
-      }
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  // Update the user's password and clear the verification token
+  await this.prisma.credential.update({
+    where: { id: user.id },
+    data: {
+      password: hashedPassword,
+      verificationToken: null,
+      verificationTokenExpiresAt: null,
+    },
+  });
+
+  return { message: 'Password reset successful' };
+}
+
+
+async verifyOTP( otp: number) {
+  const user = await this.prisma.credential.findFirst({
+    where: {
+      resetToken: otp,
+      resetTokenExpiresAt: {
+        gt: new Date(),
+      },
+    },
+  });
+
+  if (!user) {
+    throw new HttpException('Invalid or expired OTP', HttpStatus.BAD_REQUEST);
   }
+
+  // Generate a temporary verification token (e.g., a long random string)
+  const verificationToken = randomBytes(32).toString('hex');
+  const verificationTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  // Store the verification token in the user's record
+  await this.prisma.credential.update({
+    where: { id: user.id },
+    data: {
+      resetToken: null,
+      resetTokenExpiresAt: null,
+      verificationToken: verificationToken,
+      verificationTokenExpiresAt: verificationTokenExpiresAt,
+    },
+  });
+
+  // Return the token to the frontend
+  return { message: 'OTP verified successfully', verificationToken: verificationToken };
+}
+
+
+async resetUserPassword(userId: string, oldPassword: string, newPassword: string) {
+  const user = await this.prisma.credential.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  }
+
+  // 2. Compare the provided old password with the hashed password in the database
+  const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+  
+  if (!isPasswordMatch) {
+    throw new HttpException('Invalid old password', HttpStatus.UNAUTHORIZED);
+  }
+
+  // 3. Hash the new password and update the database
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
+  await this.prisma.credential.update({
+    where: { id: user.id },
+    data: {
+      password: hashedPassword,
+    },
+  });
+  
+  return { message: 'Password updated successfully' };
+}
 }
