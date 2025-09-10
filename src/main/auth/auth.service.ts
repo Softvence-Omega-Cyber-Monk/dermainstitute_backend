@@ -47,45 +47,50 @@ export class AuthService {
 
   // This function for login user
   async login(loginDto: LoginDTO) {
-    const { email, phone, password } = loginDto;
-    try {
-      // --- Find user by email OR phone ---
-      const user = await this.prisma.credential.findFirst({
-        where: {
-          OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
-        },
-      });
+  const { email, phone, password } = loginDto;
 
-      if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
+  try {
+    // --- Find user by email OR phone ---
+    const user = await this.prisma.credential.findFirst({
+      where: {
+        OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
+      },
+    });
 
-      // --- Check password ---
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
-      }
-
-      // --- Build JWT payload ---
-      const payload = {
-        userId: user.id,
-        email: user.email,
-        phone: user.phone,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      };
-
-      const accessToken = await this.jwtService.signAsync(payload);
-
-      return { accessToken };
-    } catch (error) {
-      throw new HttpException(
-        error.message || 'Login failed',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+
+    // --- Check password ---
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+    }
+
+    // --- Build JWT payload ---
+    const payload = {
+      userId: user.id,
+      email: user.email,
+      phone: user.phone,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    // --- Exclude password before returning ---
+    const { password: _, ...safeUser } = user;
+
+    return { accessToken, user: safeUser };
+  } catch (error) {
+    throw new HttpException(
+      error.message || 'Login failed',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
+}
+j
 
   //forget-password
   async forgetPassword(email: string) {

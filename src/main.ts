@@ -42,6 +42,6 @@ async function bootstrap() {
     },
   });
   app.use('/api/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
-  await app.listen(process.env.PORT ?? 5000);
+  await app.listen(process.env.PORT ?? 5500);
 }
 bootstrap();
