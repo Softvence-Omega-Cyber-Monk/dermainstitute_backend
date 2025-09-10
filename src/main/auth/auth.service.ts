@@ -90,7 +90,6 @@ export class AuthService {
     );
   }
 }
-j
 
   //forget-password
   async forgetPassword(email: string) {
@@ -101,7 +100,7 @@ j
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    const token = randomBytes(32).toString('hex');
+    const token = randomBytes(4).toString('hex');
     await this.prisma.credential.update({
       where: { email },
       data: { resetToken: token },
@@ -111,10 +110,9 @@ j
     await this.mailService.sendMail({
       to: email,
       subject: 'Password Reset',
-      html: `<h1>Password Reset Request</h1><p>Click the link below to reset your password:</p><a href="${resetUrl}">Reset Password</a>`,
+      html: `<h1>Password Reset Request</h1><p>your password change  OTP:${token}</p>`,
       from: process.env.SMTP_USER as string,
     });
-
     return { message: 'Password reset email sent successfully' };
   }
 
@@ -138,5 +136,21 @@ j
     });
 
     return { message: 'Password reset successful' };
+  }
+
+
+  async verifyOTP(opt: string) {
+    try {
+      const isOTPValid = await this.prisma.credential.findFirst({
+        where: { resetToken: opt },
+      });
+      if (isOTPValid) {
+        return { message: 'OTP is valid' };
+      } else {
+        throw new HttpException('OTP is not valid', HttpStatus.BAD_REQUEST);
+      }
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

@@ -1,8 +1,8 @@
-import { Controller, Post, Body, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { LoginDTO } from './dto/login.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiQuery } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -74,6 +74,25 @@ export class AuthController {
     }
   }
 
+  @Get("verify-otp")
+  @ApiQuery({ name: 'otp', type: 'string' })
+  async verifyOTP(@Body() body: { otp: string }) {
+    try {
+      const result = await this.authService.verifyOTP(body.otp);
+      return {
+        statusCode: HttpStatus.OK,
+        success: true,
+        message: 'OTP verified successfully',
+        data: result,
+      }
+    } catch (error) {
+      return {
+        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        success: false,
+        message: error.message || 'Internal Server Error',
+      }
+    }
+  }
   @Post('reset-password')
   async resetPassword(@Body() body: { token: string; password: string }) {
     try {

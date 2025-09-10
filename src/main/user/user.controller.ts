@@ -25,6 +25,7 @@ export class UserController {
 
   @Get('get-me')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async getMe(@Request() req) {
     const user = req.user;
     try {
