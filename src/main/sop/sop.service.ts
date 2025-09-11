@@ -44,7 +44,7 @@ export class SopService {
       return await this.prisma.sOP.findMany({
         where: {
           jurisdiction: jurisdiction ? { has: jurisdiction } : undefined,
-          title: title ? { contains: title } : undefined,
+          title: title ? { contains: title, mode: 'insensitive' } : undefined,
           status: status ? { equals: status } : undefined,
         },
         include: {
