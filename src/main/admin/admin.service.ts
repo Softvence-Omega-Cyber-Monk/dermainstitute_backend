@@ -103,4 +103,16 @@ async findOne(id:string){
   });
   return res;
 }
+
+async remove(id: string) {
+  try{
+   const res=await this.prisma.credential.delete({
+    where: {
+      id
+    }
+  });
+  }catch(error){
+    throw new HttpException(error.message, error.status)
+  }
+}
 }
