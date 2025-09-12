@@ -86,11 +86,7 @@ async approve(id: string, dto: ApproveUserDto) {
 }
 
 async getAllUsers(){
-  const res = await this.prisma.credential.findMany({
-    where: {
-      isApproved: false
-    }
-  });
+  const res = await this.prisma.credential.findMany();
   return res;
 }
 
