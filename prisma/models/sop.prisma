@@ -12,6 +12,7 @@ model SOP {
   author              String?
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
+  priority            Priority?
   protocolSteps       ProtocolStep[]
   medications         Medication[]
   oxygen              Oxygen?
@@ -49,4 +50,9 @@ model Oxygen {
 enum SOPStatus {
 Procedure
 Emergence
+}
+enum Priority {
+  High_Priority
+  Medium_Priority
+  Low_Priority
 }
