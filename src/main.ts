@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as bodyParser from 'body-parser';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,

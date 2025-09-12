@@ -59,7 +59,9 @@ export class AuthService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-
+    if(user.isApproved === false){
+      throw new HttpException('Your account is not approved please contact to admin', HttpStatus.NOT_FOUND);
+    }
     // --- Check password ---
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
