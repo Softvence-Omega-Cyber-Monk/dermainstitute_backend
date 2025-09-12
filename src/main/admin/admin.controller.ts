@@ -8,11 +8,13 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApproveUserDto, UpdateAdminDto } from './dto/update-admin.dto';
+import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('admin')
 export class AdminController {
@@ -56,4 +58,62 @@ export class AdminController {
       }
     }
   }
+
+   @Patch('approve/:id')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: ApproveUserDto })
+  @UseInterceptors(AnyFilesInterceptor()) // Important for parsing multipart/form-data
+  async approve(@Param('id') id: string, @Body() req: ApproveUserDto) {
+    try {
+      const res = await this.adminService.approve(id, req);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'success',
+        data: res,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      };
+    }
+  }
+
+  @Get('user')
+  @ApiOperation({description: 'Get all users'})
+  async getAllUsers() {
+    try {
+      const res = await this.adminService.getAllUsers();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'success',
+        data: res,
+      };
+    } catch (error) {
+      return{
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error.message,
+        data: null
+      }
+    }
+  }
+
+  @Get('user/:id')
+  async findOne(@Param('id') id: string) {
+    try{
+      const res=await this.adminService.findOne(id);
+    return{
+      satusCode: HttpStatus.OK,
+      message: 'success',
+      data: res
+    }
+  }catch(error){
+    return{
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: error.message,
+      data: null
+    }
+  }
+    }
 }

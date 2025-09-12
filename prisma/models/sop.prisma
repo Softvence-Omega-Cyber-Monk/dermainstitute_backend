@@ -12,7 +12,7 @@ model SOP {
   author              String?
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
-  priority            Priority?
+  priority            Priority @default(Medium_Priority)
   protocolSteps       ProtocolStep[]
   medications         Medication[]
   oxygen              Oxygen?

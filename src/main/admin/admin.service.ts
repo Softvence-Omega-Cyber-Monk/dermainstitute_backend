@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
+import { ApproveUserDto, UpdateAdminDto } from './dto/update-admin.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -59,4 +59,47 @@ export class AdminService {
       throw new HttpException(error.message, error.status);
     }
   }
+
+async approve(id: string, dto: ApproveUserDto) {
+  const user = await this.prisma.credential.findUnique({ where: { id } });
+  if (!user) {
+    throw new NotFoundException(`User with id ${id} not found`);
+  }
+
+  const updatedUser = await this.prisma.credential.update({
+    where: { id },
+    data: {
+      role: dto.role,
+      jurisdiction: dto.jurisdiction,
+      institution: dto.institution,
+      department: dto.department,
+      specialization: dto.specialization,
+      isApproved: true,
+    },
+  });
+
+  return {
+    message: `User ${id} approved successfully`,
+    user: updatedUser,
+  };
+}
+
+async getAllUsers(){
+  const res = await this.prisma.credential.findMany({
+    where: {
+      isApproved: false
+    }
+  });
+  return res;
+}
+
+
+async findOne(id:string){
+  const res = await this.prisma.credential.findUnique({
+    where: {
+      id
+    }
+  });
+  return res;
+}
 }

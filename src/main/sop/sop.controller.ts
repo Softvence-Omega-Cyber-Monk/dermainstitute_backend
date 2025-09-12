@@ -11,7 +11,9 @@ import {
   NotFoundException, // Import for 404 handling
   BadRequestException, // Import for 400 handling (less common here, but good practice)
   InternalServerErrorException,
-  Query, // Import for 500 handling
+  Query,
+  UseGuards,
+  Req, // Import for 500 handling
 } from '@nestjs/common';
 import { SopService } from './sop.service';
 import { CreateSopDto } from './dto/create-sop.dto';
@@ -25,7 +27,9 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
 
 @ApiTags('sop')
 @Controller('sop')
@@ -33,6 +37,8 @@ export class SopController {
   constructor(private readonly sopService: SopService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create a new SOP',
     description: 'Creates a new Standard Operating Procedure record.',
@@ -42,9 +48,10 @@ export class SopController {
     type: CreateSopDto,
     description: 'The data for creating a new SOP.',
   })
-  async create(@Body() createSopDto: CreateSopDto) {
+  async create(@Body() createSopDto: CreateSopDto,@Req() req:any) {
+    console.log(createSopDto)
     try {
-      return await this.sopService.create(createSopDto);
+      return await this.sopService.create(req.user,createSopDto);
     } catch (error) {
       // Example of handling a potential known database/logic error (e.g., uniqueness constraint violation)
       throw new InternalServerErrorException(
