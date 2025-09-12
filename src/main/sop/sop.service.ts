@@ -19,6 +19,7 @@ export class SopService {
         data: {
           ...sopData,
           status: sopData.status as SOPStatus,
+          priority: sopData.priority as any,
           protocolSteps: {
             create: protocolSteps,
           },

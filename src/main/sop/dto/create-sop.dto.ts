@@ -107,6 +107,11 @@ export class CreateSopDto {
   indications: string[];
 
   @ApiProperty({
+    description:"Priority",
+    default: "High"
+  })
+  priority: string;
+  @ApiProperty({
     description: 'List of contraindications.',
     isArray: true,
     type: String,
