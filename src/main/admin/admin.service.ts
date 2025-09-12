@@ -74,6 +74,7 @@ async approve(id: string, dto: ApproveUserDto) {
       institution: dto.institution,
       department: dto.department,
       specialization: dto.specialization,
+      status:"active",
       isApproved: true,
     },
   });
