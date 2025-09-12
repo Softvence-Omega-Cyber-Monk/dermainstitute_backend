@@ -113,6 +113,13 @@ export class CreateSopDto {
 @IsOptional()
 @IsString()
 priority?: string;
+@ApiProperty({
+  description: "Draft or published",
+  default: "Published",
+})
+@IsOptional()
+@IsString()
+isDraft?: string;
 
   @ApiProperty({
     description: 'List of contraindications.',
@@ -140,13 +147,6 @@ priority?: string;
   @IsEnum(SOPStatus)
   status?: SOPStatus;
 
-  @ApiProperty({
-    description: 'Indicates if the SOP is a draft.',
-    default: true,
-  })
-  @IsOptional()
-  @IsBoolean()
-  isDraft?: boolean;
 
   @ApiProperty({ description: 'The author of the SOP.' })
   @IsOptional()

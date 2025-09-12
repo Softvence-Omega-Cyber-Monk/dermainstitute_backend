@@ -8,7 +8,7 @@ model SOP {
   contraindications   String[]
   required_equipment  String[]
   status              SOPStatus  @default(Procedure)
-  isDraft             Boolean    @default(true)
+  isDraft             isDraft
   author              String?
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
@@ -55,4 +55,9 @@ enum Priority {
   High_Priority
   Medium_Priority
   Low_Priority
+}
+
+enum isDraft {
+  isDraft
+  Published
 }

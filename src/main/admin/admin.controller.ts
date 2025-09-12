@@ -11,7 +11,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto } from './dto/create-admin.dto';
 import { ApproveUserDto, UpdateAdminDto } from './dto/update-admin.dto';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';

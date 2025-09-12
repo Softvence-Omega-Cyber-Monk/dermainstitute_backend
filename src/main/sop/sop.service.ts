@@ -28,7 +28,7 @@ export class SopService {
             create: medications,
           },
           oxygen: oxygen ? { create: oxygen } : undefined,
-        },
+        } as any,
         include: {
           protocolSteps: true,
           medications: true,
