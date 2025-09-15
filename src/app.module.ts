@@ -13,6 +13,7 @@ import { SopModule } from './main/sop/sop.module';
 import { ReportModule } from './main/report/report.module';
 import { AdminModule } from './main/admin/admin.module';
 import { join } from 'path';
+import { MedicineModule } from './main/medicine/medicine.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { join } from 'path';
     SopModule,
     ReportModule,
     AdminModule,
+    MedicineModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],
