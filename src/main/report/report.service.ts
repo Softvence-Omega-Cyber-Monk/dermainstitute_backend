@@ -4,8 +4,9 @@ import { Injectable } from '@nestjs/common';
 
 import { CreateIncidentReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
-import { Situation, Status } from './dto/create-report.dto';
+import {Status } from './dto/create-report.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Situation } from 'generated/prisma';
 
 @Injectable()
 export class ReportService {
@@ -16,7 +17,7 @@ export class ReportService {
       return await this.prisma.incidentReport.create({
         data: {
           ...createReportDto,
-          situation: createReportDto.situation as Situation,
+          situation: createReportDto.situation,
           status: createReportDto.status as Status,
         },
       });
@@ -28,7 +29,7 @@ export class ReportService {
     }
   }
 
-  async findAll(situation?: Situation, title?: string) {
+  async findAll(situation?:Situation, title?: string) {
     const where: any = {};
 
     if (situation) {

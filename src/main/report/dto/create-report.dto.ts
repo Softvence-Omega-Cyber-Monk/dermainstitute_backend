@@ -7,13 +7,8 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Situation } from 'generated/prisma';
 
-export enum Situation {
-  Low = 'Low',
-  Medium = 'Medium',
-  High = 'High',
-  Crtical = 'Crtical',
-}
 
 export enum Status {
   Complete = 'Complete',

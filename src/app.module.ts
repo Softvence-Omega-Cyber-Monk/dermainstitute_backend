@@ -14,6 +14,7 @@ import { ReportModule } from './main/report/report.module';
 import { AdminModule } from './main/admin/admin.module';
 import { join } from 'path';
 import { MedicineModule } from './main/medicine/medicine.module';
+import { SeederService } from './seeder/seederService';
 
 @Module({
   imports: [
@@ -33,6 +34,6 @@ import { MedicineModule } from './main/medicine/medicine.module';
     MedicineModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CloudinaryService],
+  providers: [AppService, CloudinaryService,SeederService],
 })
 export class AppModule {}

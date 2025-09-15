@@ -223,4 +223,32 @@ async resetUserPassword(userId: string, oldPassword: string, newPassword: string
   
   return { message: 'Password updated successfully' };
 }
+
+async createSuperAdmin() {
+  try {
+    const existingUser = await this.prisma.credential.findUnique({
+      where: {
+        email: 'admin@gmail.com',
+      },
+    });
+    if (existingUser) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
+    const hasshedPassword = await bcrypt.hash('admin123', 10);
+    const credential = await this.prisma.credential.create({
+      data: {
+        email: 'admin@gmail.com',
+        password: hasshedPassword,
+        firstName: 'SUPER_admin',
+        lastName: 'admin',
+        role: 'SUPER_ADMIN',
+        phone: '123456789023',
+        isApproved: true,
+      },
+    });
+    return credential;
+  } catch (error) {
+    throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
 }

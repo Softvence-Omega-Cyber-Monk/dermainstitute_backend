@@ -23,7 +23,7 @@ enum Situation {
   Low
   Medium
   High
-  Crtical
+  Critical
 }
 enum Status {
     Complete

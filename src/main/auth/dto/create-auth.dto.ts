@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { UserRole } from 'generated/prisma';
 
 export class CreateAuthDto {
   @ApiProperty({
@@ -53,5 +54,5 @@ export class CreateAuthDto {
   })
   @IsNotEmpty()
   @IsString()
-  role: string;
+  role: UserRole;
 }
