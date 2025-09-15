@@ -37,11 +37,11 @@ export class UserController {
         data: result,
       };
     } catch (error) {
-       return{
-              statusCode: HttpStatus.BAD_REQUEST,
-              message: error.message,
-              data: null
-            }
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      };
     }
   }
 
@@ -70,11 +70,11 @@ export class UserController {
         data: result,
       };
     } catch (error) {
-       return{
+      return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: error.message,
-        data: null
-      }
+        data: null,
+      };
     }
   }
 }

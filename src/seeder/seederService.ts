@@ -35,7 +35,7 @@ export class SeederService implements OnApplicationBootstrap {
         role: UserRole.SUPER_ADMIN,
         firstName: 'Super',
         lastName: 'Admin',
-        isApproved:true
+        isApproved: true,
       },
     });
 

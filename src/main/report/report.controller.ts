@@ -15,11 +15,15 @@ import {
 import { ReportService } from './report.service';
 import { UpdateReportDto } from './dto/update-report.dto';
 import { CreateIncidentReportDto } from './dto/create-report.dto';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
 import { Situation } from 'generated/prisma';
-
 
 @Controller('report')
 export class ReportController {
@@ -85,7 +89,6 @@ export class ReportController {
       );
     }
   }
-
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)

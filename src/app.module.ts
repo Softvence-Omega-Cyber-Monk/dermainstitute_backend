@@ -34,6 +34,6 @@ import { SeederService } from './seeder/seederService';
     MedicineModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CloudinaryService,SeederService],
+  providers: [AppService, CloudinaryService, SeederService],
 })
 export class AppModule {}

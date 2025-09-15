@@ -1,4 +1,14 @@
-import { Controller, Post, Body, HttpStatus, Get, Query, Patch, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpStatus,
+  Get,
+  Query,
+  Patch,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { LoginDTO } from './dto/login.dto';
@@ -78,17 +88,17 @@ export class AuthController {
     }
   }
 
- @Post('verify-otp')
+  @Post('verify-otp')
   @ApiBody({
     schema: {
       properties: {
-        otp: { type: 'number' }
-      }
-    }
+        otp: { type: 'number' },
+      },
+    },
   })
-  async verifyOTP(@Body() body: {  otp: number }) {
+  async verifyOTP(@Body() body: { otp: number }) {
     try {
-      const result = await this.authService.verifyOTP( body.otp);
+      const result = await this.authService.verifyOTP(body.otp);
       return {
         statusCode: HttpStatus.OK,
         success: true,
@@ -128,10 +138,13 @@ export class AuthController {
   @Patch('/user/reset-password')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiBody({ type:ResetUserPasswordDto})
-  async resetUserPassword(@Body() body: { oldPassword: string; newPassword: string },@Req() req: any) {
+  @ApiBody({ type: ResetUserPasswordDto })
+  async resetUserPassword(
+    @Body() body: { oldPassword: string; newPassword: string },
+    @Req() req: any,
+  ) {
     try {
-      const user=req.user
+      const user = req.user;
       const result = await this.authService.resetUserPassword(
         user.userId,
         body.oldPassword,
@@ -153,7 +166,7 @@ export class AuthController {
   }
 
   @Post('admin')
-  async createSuperAdmin(){
+  async createSuperAdmin() {
     try {
       const result = await this.authService.createSuperAdmin();
       return {

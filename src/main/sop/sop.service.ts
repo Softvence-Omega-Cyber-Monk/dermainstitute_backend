@@ -11,9 +11,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class SopService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(user:any,createSopDto: CreateSopDto) {
+  async create(user: any, createSopDto: CreateSopDto) {
     try {
-      console.log(user)
+      console.log(user);
       const { protocolSteps, medications, oxygen, ...sopData } = createSopDto;
 
       return await this.prisma.sOP.create({

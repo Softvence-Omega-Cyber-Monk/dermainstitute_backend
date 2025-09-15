@@ -105,21 +105,21 @@ export class CreateSopDto {
   @IsArray()
   @IsString({ each: true })
   indications: string[];
-  
-@ApiProperty({
-  description: "Priority",
-  default: "High_Priority",
-})
-@IsOptional()
-@IsString()
-priority?: string;
-@ApiProperty({
-  description: "Draft or published",
-  default: "Published",
-})
-@IsOptional()
-@IsString()
-isDraft?: string;
+
+  @ApiProperty({
+    description: 'Priority',
+    default: 'High_Priority',
+  })
+  @IsOptional()
+  @IsString()
+  priority?: string;
+  @ApiProperty({
+    description: 'Draft or published',
+    default: 'Published',
+  })
+  @IsOptional()
+  @IsString()
+  isDraft?: string;
 
   @ApiProperty({
     description: 'List of contraindications.',
@@ -146,7 +146,6 @@ isDraft?: string;
   @IsOptional()
   @IsEnum(SOPStatus)
   status?: SOPStatus;
-
 
   @ApiProperty({ description: 'The author of the SOP.' })
   @IsOptional()

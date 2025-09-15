@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { ApproveUserDto, UpdateAdminDto } from './dto/update-admin.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -29,86 +34,85 @@ export class AdminService {
 
   async recentActivity() {
     try {
-      const [sopActivity, incidentReportActivity, credentialsActivity] = await Promise.all([
-        await this.prisma.sOP.findMany({
-          take: 2,
-          orderBy: {
-            createdAt: 'desc',
-          },
-          
-        }),
-        await this.prisma.incidentReport.findMany({
-          take: 2,
-          orderBy: {
-            createdAt: 'desc',
-          },
-        }),
-        await this.prisma.credential.findMany({
-          take: 2,
-          orderBy: {
-            createdAt: 'desc',
-          },
-        }),
-      ]);
+      const [sopActivity, incidentReportActivity, credentialsActivity] =
+        await Promise.all([
+          await this.prisma.sOP.findMany({
+            take: 2,
+            orderBy: {
+              createdAt: 'desc',
+            },
+          }),
+          await this.prisma.incidentReport.findMany({
+            take: 2,
+            orderBy: {
+              createdAt: 'desc',
+            },
+          }),
+          await this.prisma.credential.findMany({
+            take: 2,
+            orderBy: {
+              createdAt: 'desc',
+            },
+          }),
+        ]);
       return {
-       sopActivity,
-       incidentReportActivity,
-       credentialsActivity
+        sopActivity,
+        incidentReportActivity,
+        credentialsActivity,
       };
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
-async approve(id: string, dto: ApproveUserDto) {
-  const user = await this.prisma.credential.findUnique({ where: { id } });
-  if (!user) {
-    throw new NotFoundException(`User with id ${id} not found`);
+  async approve(id: string, dto: ApproveUserDto) {
+    const user = await this.prisma.credential.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    const updatedUser = await this.prisma.credential.update({
+      where: { id },
+      data: {
+        role: dto.role,
+        jurisdiction: dto.jurisdiction,
+        institution: dto.institution,
+        department: dto.department,
+        specialization: dto.specialization,
+        status: 'active',
+        isApproved: true,
+      },
+    });
+
+    return {
+      message: `User ${id} approved successfully`,
+      user: updatedUser,
+    };
   }
 
-  const updatedUser = await this.prisma.credential.update({
-    where: { id },
-    data: {
-      role: dto.role,
-      jurisdiction: dto.jurisdiction,
-      institution: dto.institution,
-      department: dto.department,
-      specialization: dto.specialization,
-      status:"active",
-      isApproved: true,
-    },
-  });
-
-  return {
-    message: `User ${id} approved successfully`,
-    user: updatedUser,
-  };
-}
-
-async getAllUsers(){
-  const res = await this.prisma.credential.findMany();
-  return res;
-}
-
-
-async findOne(id:string){
-  const res = await this.prisma.credential.findUnique({
-    where: {
-      id
-    }
-  });
-  return res;
-}
-
-async remove(id: string) {
-  try{
-   const res=await this.prisma.credential.delete({
-    where: {
-      id
-    }
-  });
-  }catch(error){
-    throw new HttpException(error.message, error.status)
+  async getAllUsers() {
+    const res = await this.prisma.credential.findMany();
+    return res;
   }
-}
+
+  async findOne(id: string) {
+    const res = await this.prisma.credential.findUnique({
+      where: {
+        id,
+      },
+    });
+    return res;
+  }
+
+  async remove(id: string) {
+    try {
+      const res = await this.prisma.credential.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
 }

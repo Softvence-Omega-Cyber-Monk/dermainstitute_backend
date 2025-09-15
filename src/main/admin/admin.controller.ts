@@ -6,21 +6,34 @@ import {
   Patch,
   Param,
   Delete,
-  HttpException,
   HttpStatus,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { ApproveUserDto, UpdateAdminDto } from './dto/update-admin.dto';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
+import { RolesGuard } from 'src/utils/authorization/roles.guard';
+import { Roles } from 'src/utils/authorization/roles.decorator';
+import { Role } from 'src/utils/authorization/role.enum';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  // get all 
+  // get all
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
   async findAll() {
     try {
       const res = await this.adminService.findAll();
@@ -30,17 +43,20 @@ export class AdminController {
         data: res,
       };
     } catch (error) {
-       return{
+      return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: error.message,
-        data: null
-      }
+        data: null,
+      };
     }
   }
 
   // get all recent activity
   @Get('recentActivity')
-  @ApiOperation({description: 'Get recent activity'})
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
+  @ApiOperation({ description: 'Get recent activity' })
   async recentAcivity() {
     try {
       const res = await this.adminService.recentActivity();
@@ -50,17 +66,20 @@ export class AdminController {
         data: res,
       };
     } catch (error) {
-      return{
+      return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: error.message,
-        data: null
-      }
+        data: null,
+      };
     }
   }
 
-   @Patch('approve/:id')
+  @Patch('approve/:id')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: ApproveUserDto })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
   @UseInterceptors(AnyFilesInterceptor()) // Important for parsing multipart/form-data
   async approve(@Param('id') id: string, @Body() req: ApproveUserDto) {
     try {
@@ -80,7 +99,10 @@ export class AdminController {
   }
 
   @Get('user')
-  @ApiOperation({description: 'Get all users'})
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
+  @ApiOperation({ description: 'Get all users' })
   async getAllUsers() {
     try {
       const res = await this.adminService.getAllUsers();
@@ -90,33 +112,39 @@ export class AdminController {
         data: res,
       };
     } catch (error) {
-      return{
+      return {
         statusCode: HttpStatus.BAD_REQUEST,
         message: error.message,
-        data: null
-      }
+        data: null,
+      };
     }
   }
 
   @Get('user/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
   async findOne(@Param('id') id: string) {
-    try{
-      const res=await this.adminService.findOne(id);
-    return{
-      satusCode: HttpStatus.OK,
-      message: 'success',
-      data: res
-    }
-  }catch(error){
-    return{
-      statusCode: HttpStatus.BAD_REQUEST,
-      message: error.message,
-      data: null
+    try {
+      const res = await this.adminService.findOne(id);
+      return {
+        satusCode: HttpStatus.OK,
+        message: 'success',
+        data: res,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      };
     }
   }
-    }
 
-   @Delete('user/:id')
+  @Delete('user/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin)
   @ApiOperation({
     summary: 'Delete a user by ID',
     description: 'Removes a user from the system using their unique ID.',

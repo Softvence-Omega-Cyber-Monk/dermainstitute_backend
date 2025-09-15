@@ -48,10 +48,10 @@ export class SopController {
     type: CreateSopDto,
     description: 'The data for creating a new SOP.',
   })
-  async create(@Body() createSopDto: CreateSopDto,@Req() req:any) {
-    console.log(createSopDto)
+  async create(@Body() createSopDto: CreateSopDto, @Req() req: any) {
+    console.log(createSopDto);
     try {
-      return await this.sopService.create(req.user,createSopDto);
+      return await this.sopService.create(req.user, createSopDto);
     } catch (error) {
       // Example of handling a potential known database/logic error (e.g., uniqueness constraint violation)
       throw new InternalServerErrorException(

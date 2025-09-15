@@ -9,7 +9,6 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Situation } from 'generated/prisma';
 
-
 export enum Status {
   Complete = 'Complete',
   Submitted = 'Submitted',
