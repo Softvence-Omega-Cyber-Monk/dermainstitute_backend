@@ -33,7 +33,7 @@ export class AdminController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   async findAll() {
     try {
       const res = await this.adminService.findAll();
