@@ -11,6 +11,7 @@ import {
   InternalServerErrorException,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { UpdateReportDto } from './dto/update-report.dto';
@@ -32,9 +33,10 @@ export class ReportController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async create(@Body() createReportDto: CreateIncidentReportDto) {
+  async create(@Body() createReportDto: CreateIncidentReportDto,@Req() req:any) {
     try {
-      return await this.reportService.create(createReportDto);
+      const user=req.user
+      return await this.reportService.create(createReportDto,user.userId);
     } catch (error) {
       throw new InternalServerErrorException(
         'Failed to create the incident report.',

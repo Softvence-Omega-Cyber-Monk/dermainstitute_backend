@@ -12,11 +12,12 @@ import { Situation } from 'generated/prisma';
 export class ReportService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createReportDto: CreateIncidentReportDto) {
+  async create(createReportDto: CreateIncidentReportDto, userId: string) {
     try {
       return await this.prisma.incidentReport.create({
         data: {
           ...createReportDto,
+          userId,
           situation: createReportDto.situation,
           status: createReportDto.status as Status,
         },

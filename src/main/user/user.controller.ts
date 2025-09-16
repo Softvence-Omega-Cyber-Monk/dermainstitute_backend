@@ -77,4 +77,26 @@ export class UserController {
       };
     }
   }
+
+  @Get("recent-activity")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getRecentActivity(@Request() req) {
+    const user = req.user;
+    try {
+      const result = await this.userService.getRecentActivity(user.userId);
+      return {
+        statusCode: 200,
+        success: true,
+        message: 'Recent activity retrieved successfully',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      };
+    }
+  }
 }

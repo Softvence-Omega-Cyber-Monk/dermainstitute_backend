@@ -70,4 +70,23 @@ export class UserService {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  async getRecentActivity(id:string){
+    try{
+        const [reports] = await Promise.all([
+          this.prisma.incidentReport.findMany({
+            where:{
+              userId: id
+            },
+            orderBy:{
+              createdAt: 'desc'
+            },
+            take:1
+          })
+        ]);
+        return reports;
+    }catch(error){
+      throw new HttpException(error.message, error.status)
+    }
+  }
 }

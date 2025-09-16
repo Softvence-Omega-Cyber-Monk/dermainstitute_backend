@@ -9,7 +9,7 @@ model IncidentReport {
 
   patientAge            Int?
   patientSex            String?    
-  
+  userId                String
   descriptionOfIncident String
  situation                 Situation
   actionsTaken          String
@@ -17,6 +17,7 @@ model IncidentReport {
   lessonsLearned        String
   isDraft               Boolean     @default(false)
   status                   Status    @default(Submitted)
+  user       Credential @relation(fields: [userId], references: [id]) 
 }
 
 enum Situation {
