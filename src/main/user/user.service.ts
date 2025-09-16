@@ -51,8 +51,6 @@ export class UserService {
           throw new HttpException('Image upload failed', 500);
         }
       }
-      console.log(process.env.BASE_URL);
-      console.log(imageUrl);
 
       const profile = await this.prisma.credential.update({
         where: {

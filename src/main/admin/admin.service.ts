@@ -91,7 +91,14 @@ export class AdminService {
   }
 
   async getAllUsers() {
-    const res = await this.prisma.credential.findMany();
+    const res = await this.prisma.credential.findMany({
+      where:{
+        role:{
+          not: 'SUPER_ADMIN'
+    
+        }
+      }
+    });
     return res;
   }
 
