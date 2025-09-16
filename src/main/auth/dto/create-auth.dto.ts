@@ -49,10 +49,10 @@ export class CreateAuthDto {
   lastName: string;
 
   @ApiProperty({
-    description: 'Role of the user in the system',
-    example: 'TRAINEE',
+    description: 'Jurisdiction of a user',
+    example: 'London',
   })
   @IsNotEmpty()
   @IsString()
-  role: UserRole;
+   jurisdiction:string
 }

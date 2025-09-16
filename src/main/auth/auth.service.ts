@@ -34,7 +34,7 @@ export class AuthService {
           password: hasshedPassword,
           firstName: createAuthDto.firstName,
           lastName: createAuthDto.lastName,
-          role: createAuthDto.role,
+        jurisdiction: createAuthDto.jurisdiction,
           phone: createAuthDto.phone,
         },
       });
