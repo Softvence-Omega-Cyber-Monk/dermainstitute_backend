@@ -55,7 +55,7 @@ export class AdminController {
   @Get('recentActivity')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   @ApiOperation({ description: 'Get recent activity' })
   async recentAcivity() {
     try {
@@ -79,7 +79,7 @@ export class AdminController {
   @ApiBody({ type: ApproveUserDto })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   @UseInterceptors(AnyFilesInterceptor()) // Important for parsing multipart/form-data
   async approve(@Param('id') id: string, @Body() req: ApproveUserDto) {
     try {
@@ -101,7 +101,7 @@ export class AdminController {
   @Get('user')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   @ApiOperation({ description: 'Get all users' })
   async getAllUsers() {
     try {
@@ -123,7 +123,7 @@ export class AdminController {
   @Get('user/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   async findOne(@Param('id') id: string) {
     try {
       const res = await this.adminService.findOne(id);
@@ -144,7 +144,7 @@ export class AdminController {
   @Delete('user/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   @ApiOperation({
     summary: 'Delete a user by ID',
     description: 'Removes a user from the system using their unique ID.',

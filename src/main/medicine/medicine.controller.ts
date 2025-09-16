@@ -24,7 +24,7 @@ export class MedicineController {
   @Post()
    @UseGuards(JwtAuthGuard,RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   async create(@Body() createMedicineDto: CreateMedicineDto) {
     try {
       const res = await this.medicineService.create(createMedicineDto);
@@ -63,7 +63,7 @@ export class MedicineController {
   @Delete(':id')
    @UseGuards(JwtAuthGuard,RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.SuperAdmin)
+  @Roles(Role.SuperAdmin,Role.Admin)
   async remove(@Param('id') id: string) {
     const res = await this.medicineService.remove(id);
     return {

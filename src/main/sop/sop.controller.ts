@@ -30,6 +30,9 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
+import { RolesGuard } from 'src/utils/authorization/roles.guard';
+import { Roles } from 'src/utils/authorization/roles.decorator';
+import { Role } from 'src/utils/authorization/role.enum';
 
 @ApiTags('sop')
 @Controller('sop')
@@ -37,8 +40,9 @@ export class SopController {
   constructor(private readonly sopService: SopService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
+  @Roles(Role.SuperAdmin,Role.Admin)
   @ApiOperation({
     summary: 'Create a new SOP',
     description: 'Creates a new Standard Operating Procedure record.',
@@ -53,7 +57,6 @@ export class SopController {
     try {
       return await this.sopService.create(req.user, createSopDto);
     } catch (error) {
-      // Example of handling a potential known database/logic error (e.g., uniqueness constraint violation)
       throw new InternalServerErrorException(
         'Failed to create SOP due to an unexpected server issue.',
       );
@@ -159,6 +162,9 @@ export class SopController {
   }
 
   @Delete(':id')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.SuperAdmin,Role.Admin)
   @ApiOperation({
     summary: 'Delete an SOP',
     description: 'Deletes an SOP record by ID.',
