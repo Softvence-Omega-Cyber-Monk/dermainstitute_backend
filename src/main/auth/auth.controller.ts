@@ -165,22 +165,22 @@ export class AuthController {
     }
   }
 
-  @Post('admin')
-  async createSuperAdmin() {
-    try {
-      const result = await this.authService.createSuperAdmin();
-      return {
-        statusCode: HttpStatus.CREATED,
-        success: true,
-        message: 'User created successfully',
-        data: result,
-      };
-    } catch (error) {
-      return {
-        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        success: false,
-        message: error.message || 'Internal Server Error',
-      };
-    }
-  }
+  // @Post('admin')
+  // async createSuperAdmin() {
+  //   try {
+  //     const result = await this.authService.createSuperAdmin();
+  //     return {
+  //       statusCode: HttpStatus.CREATED,
+  //       success: true,
+  //       message: 'User created successfully',
+  //       data: result,
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+  //       success: false,
+  //       message: error.message || 'Internal Server Error',
+  //     };
+  //   }
+  // }
 }

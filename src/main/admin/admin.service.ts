@@ -7,6 +7,7 @@ import {
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { ApproveUserDto, UpdateAdminDto } from './dto/update-admin.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UserRole } from 'generated/prisma';
 
 @Injectable()
 export class AdminService {
@@ -94,8 +95,7 @@ export class AdminService {
     const res = await this.prisma.credential.findMany({
       where:{
         role:{
-          not: 'SUPER_ADMIN'
-    
+          not: "SUPER_ADMIN"
         }
       }
     });
