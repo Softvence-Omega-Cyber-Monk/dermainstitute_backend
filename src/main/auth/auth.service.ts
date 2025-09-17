@@ -23,9 +23,18 @@ export class AuthService {
           email: createAuthDto.email,
         },
       });
+      const existingByPhone = await this.prisma.credential.findUnique({
+        where: {
+          phone:createAuthDto.phone,
+        },
+      });
       if (existingUser) {
-        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+        throw new HttpException('User email already exists', HttpStatus.BAD_REQUEST);
       }
+      if (existingByPhone) {
+        throw new HttpException('User phone already exists', HttpStatus.BAD_REQUEST);
+      }
+
       const { password } = createAuthDto;
       const hasshedPassword = await bcrypt.hash(password, 10);
       const credential = await this.prisma.credential.create({

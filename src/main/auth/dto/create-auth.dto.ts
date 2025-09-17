@@ -55,4 +55,12 @@ export class CreateAuthDto {
   @IsNotEmpty()
   @IsString()
    jurisdiction:string
+
+     @ApiProperty({
+    description: 'Role of a user',
+    example: 'TRAINEE',
+  })
+   @IsNotEmpty()
+   @IsString()
+   role:UserRole
 }
