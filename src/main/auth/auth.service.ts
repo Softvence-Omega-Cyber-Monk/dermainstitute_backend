@@ -45,6 +45,7 @@ export class AuthService {
           lastName: createAuthDto.lastName,
         jurisdiction: createAuthDto.jurisdiction,
           phone: createAuthDto.phone,
+          role:createAuthDto.role
         },
       });
       return credential;
