@@ -1,0 +1,7 @@
+model UserDeviceToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  user Credential @relation(fields: [userId],references: [id])
+}

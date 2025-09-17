@@ -39,4 +39,12 @@ export class LoginDTO {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+    @ApiProperty({
+    description: 'firebase fcm token',
+    example: 'your fcem token',
+  })
+  @IsNotEmpty()
+  @IsString()
+  fcmToken?: string;
 }

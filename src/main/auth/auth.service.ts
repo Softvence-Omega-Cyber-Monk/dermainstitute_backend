@@ -45,55 +45,68 @@ export class AuthService {
   }
 
   // This function for login user
-  async login(loginDto: LoginDTO) {
-    const { email, phone, password } = loginDto;
+ async login(loginDto: LoginDTO) {
+  const { email, phone, password, fcmToken } = loginDto;
 
-    try {
-      // --- Find user by email OR phone ---
-      const user = await this.prisma.credential.findFirst({
-        where: {
-          OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
-        },
-      });
+  try {
+    // --- Find user by email OR phone ---
+    const user = await this.prisma.credential.findFirst({
+      where: {
+        OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
+      },
+      include: { userDevice: true }, // include devices
+    });
 
-      if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
-      if (user.isApproved === false) {
-        throw new HttpException(
-          'Your account is not approved please contact to admin',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      // --- Check password ---
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
-      }
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
 
-      // --- Build JWT payload ---
-      const payload = {
-        userId: user.id,
-        email: user.email,
-        phone: user.phone,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-      };
-
-      const accessToken = await this.jwtService.signAsync(payload);
-
-      // --- Exclude password before returning ---
-      const { password: _, ...safeUser } = user;
-
-      return { accessToken, user: safeUser };
-    } catch (error) {
+    if (!user.isApproved) {
       throw new HttpException(
-        error.message || 'Login failed',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Your account is not approved, please contact admin',
+        HttpStatus.FORBIDDEN,
       );
     }
+
+    // --- Check password ---
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+    }
+
+    // --- Store/update FCM token if provided ---
+    if (fcmToken) {
+      await this.prisma.userDeviceToken.upsert({
+        where: { token: fcmToken },
+        update: { userId: user.id },
+        create: { userId: user.id, token: fcmToken },
+      });
+    }
+
+    // --- Build JWT payload ---
+    const payload = {
+      userId: user.id,
+      email: user.email,
+      phone: user.phone,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    // --- Exclude password before returning ---
+    const { password: _, ...safeUser } = user;
+
+    return { accessToken, user: safeUser };
+  } catch (error) {
+    throw new HttpException(
+      error.message || 'Login failed',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
+}
+
 
   //forget-password
   async forgetPassword(email: string) {
@@ -235,31 +248,5 @@ export class AuthService {
     return { message: 'Password updated successfully' };
   }
 
-  // async createSuperAdmin() {
-  //   try {
-  //     const existingUser = await this.prisma.credential.findUnique({
-  //       where: {
-  //         email: 'admin@gmail.com',
-  //       },
-  //     });
-  //     if (existingUser) {
-  //       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
-  //     }
-  //     const hasshedPassword = await bcrypt.hash('admin123', 10);
-  //     const credential = await this.prisma.credential.create({
-  //       data: {
-  //         email: 'admin@gmail.com',
-  //         password: hasshedPassword,
-  //         firstName: 'SUPER_admin',
-  //         lastName: 'admin',
-  //         role: 'SUPER_ADMIN',
-  //         phone: '123456789023',
-  //         isApproved: true,
-  //       },
-  //     });
-  //     return credential;
-  //   } catch (error) {
-  //     throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-  //   }
-  // }
+
 }
