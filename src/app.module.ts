@@ -16,6 +16,7 @@ import { join } from 'path';
 import { MedicineModule } from './main/medicine/medicine.module';
 import { SeederService } from './seeder/seederService';
 import { FirebaseModule } from './utils/fireBase/firebase.module';
+import { NotificationModule } from './main/notification/notification.module';
 
 
 @Module({
@@ -35,6 +36,7 @@ import { FirebaseModule } from './utils/fireBase/firebase.module';
     AdminModule,
     MedicineModule,
     FirebaseModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService, SeederService],

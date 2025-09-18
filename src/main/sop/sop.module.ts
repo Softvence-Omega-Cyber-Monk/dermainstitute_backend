@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SopService } from './sop.service';
 import { SopController } from './sop.controller';
-import { NotificationService } from 'src/utils/fireBase/notification.service';
+import { NotificationService } from '../notification/notification.service';
+
 
 @Module({
   controllers: [SopController],

@@ -44,7 +44,7 @@ export class LoginDTO {
     description: 'firebase fcm token',
     example: 'your fcem token',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   fcmToken?: string;
 }

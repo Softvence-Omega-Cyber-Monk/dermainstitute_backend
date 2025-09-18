@@ -63,10 +63,9 @@ export class AuthService {
     const user = await this.prisma.credential.findFirst({
       where: {
         OR: [...(email ? [{ email }] : []), ...(phone ? [{ phone }] : [])],
-      },
-      include: { userDevice: true }, // include devices
+      }
     });
-
+    console.log(user)
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -83,13 +82,16 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
-
+ console.log(fcmToken)
     // --- Store/update FCM token if provided ---
     if (fcmToken) {
-      await this.prisma.userDeviceToken.upsert({
-        where: { token: fcmToken },
-        update: { userId: user.id },
-        create: { userId: user.id, token: fcmToken },
+    const res=  await this.prisma.credential.update({
+        where:{
+          id:user.id
+        },
+        data:{
+          fcmToken:fcmToken
+        }
       });
     }
 

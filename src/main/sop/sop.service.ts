@@ -6,15 +6,15 @@ import { CreateSopDto } from './dto/create-sop.dto';
 import { UpdateSopDto } from './dto/update-sop.dto';
 import { SOPStatus } from './dto/create-sop.dto'; // Import the SOPStatus enum
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NotificationService } from 'src/utils/fireBase/notification.service';
+import { NotificationService } from '../notification/notification.service';
+
 
 @Injectable()
 export class SopService {
   constructor(private readonly prisma: PrismaService,private readonly notificationService: NotificationService,) {}
 
-  async create(user: any, createSopDto: CreateSopDto) {
+async create(user: any, createSopDto: CreateSopDto) {
   try {
-    console.log(user);
     const { protocolSteps, medications, oxygen, ...sopData } = createSopDto;
 
     // --- Create SOP in DB ---
@@ -33,20 +33,19 @@ export class SopService {
         oxygen: true,
       },
     });
-
-    // --- Send notification to all users who opted in ---
-    await this.notificationService.sendNotification({
-      title: 'New SOP Created',
-      message: `A new SOP titled "${sop.title}" has been created.`,
-      // options: { notificationEnabled: true } // optional, defaults to only users with notification = true
-    });
-
+     const res=await this.notificationService.broadcastToAll({
+        title: ' New SOP Released!',
+        body: createSopDto.title,
+       
+      });
+      console.log(res);
     return sop;
   } catch (error) {
     console.error(error);
     throw new Error('Failed to create SOP due to a database error.');
   }
 }
+
 
 
   async findAll(jurisdiction?: string, title?: string, status?: any) {
