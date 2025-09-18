@@ -79,8 +79,12 @@ export class UserService {
             orderBy:{
               createdAt: 'desc'
             },
+            include:{
+              user: true
+            },
             take:1
-          })
+          }),
+          
         ]);
         return reports;
     }catch(error){
