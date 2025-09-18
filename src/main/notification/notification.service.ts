@@ -22,7 +22,60 @@ export class NotificationService {
   async broadcastToAll(payload: BroadcastPayload) {
     const credentials = await this.prisma.credential.findMany({
       select: { fcmToken: true },
-      where: { fcmToken: { not: null } },
+      where: { fcmToken: { not: null },notification:true},
+    });
+
+    if (!credentials.length) {
+      this.logger.warn('No device tokens found in DB');
+      return { message: 'No tokens available' };
+    }
+
+    const tokenList = credentials.map((c) => c.fcmToken!);
+
+    const resp = await this.firebaseApp.messaging().sendEachForMulticast({
+      tokens: tokenList,
+      notification: {
+        title: payload.title,
+        body: payload.body,
+      },
+      data: {
+        // deepLink: payload.deepLink ?? '',
+        // contentType: payload.contentType,
+        // contentId: payload.contentId ?? '',
+      },
+      android: { priority: 'high' },
+      apns: { payload: { aps: { sound: 'default', contentAvailable: true } } },
+    });
+
+    this.logger.log(
+      `Broadcast complete: success=${resp.successCount}, fail=${resp.failureCount}`,
+    );
+
+    const invalidTokens = resp.responses
+      .map((r, i) =>
+        !r.success &&
+        ['messaging/invalid-argument', 'messaging/registration-token-not-registered'].includes(
+          (r.error as any)?.errorInfo?.code,
+        )
+          ? tokenList[i]
+          : null,
+      )
+      .filter((t): t is string => !!t);
+
+    if (invalidTokens.length) {
+      await this.prisma.credential.updateMany({
+        where: { fcmToken: { in: invalidTokens } },
+        data: { fcmToken: null },
+      });
+      this.logger.warn(`Removed ${invalidTokens.length} invalid tokens`);
+    }
+
+    return { message: 'Broadcast sent' };
+  }
+  async broadcastEmargencyToAll(payload: BroadcastPayload) {
+    const credentials = await this.prisma.credential.findMany({
+      select: { fcmToken: true },
+      where: { fcmToken: { not: null },emargencyAlert:true},
     });
 
     if (!credentials.length) {

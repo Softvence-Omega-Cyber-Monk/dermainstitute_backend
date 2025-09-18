@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { CreateSopDto } from './dto/create-sop.dto';
 import { UpdateSopDto } from './dto/update-sop.dto';
-import { SOPStatus } from './dto/create-sop.dto'; // Import the SOPStatus enum
+import { SOPStatus } from './dto/create-sop.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NotificationService } from '../notification/notification.service';
 
@@ -33,12 +33,18 @@ async create(user: any, createSopDto: CreateSopDto) {
         oxygen: true,
       },
     });
+    if(createSopDto.status === SOPStatus.Emergence){
+      const res=await this.notificationService.broadcastEmargencyToAll({
+        title: ' New Emagency Protocol Released!',
+        body: createSopDto.title
+      });
+    }
      const res=await this.notificationService.broadcastToAll({
-        title: ' New SOP Released!',
+        title: ' New Protocol Relesed',
         body: createSopDto.title,
        
       });
-      console.log(res);
+      
     return sop;
   } catch (error) {
     console.error(error);

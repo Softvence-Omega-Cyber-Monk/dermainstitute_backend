@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { UpdateCredentialDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TUser } from 'src/types/user';
-import * as fs from 'fs/promises'; // Import the file system promises module
+import * as fs from 'fs/promises';
 import * as path from 'path';
 @Injectable()
 export class UserService {
