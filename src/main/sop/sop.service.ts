@@ -66,6 +66,12 @@ async create(userId: string, createSopDto: CreateSopDto) {
           protocolSteps: true,
           medications: true,
           oxygen: true,
+          user: {
+            select: {
+              firstName: true,
+              lastName: true
+            },
+          },
         },
       });
     } catch (error) {
