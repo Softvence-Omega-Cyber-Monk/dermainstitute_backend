@@ -9,13 +9,14 @@ model SOP {
   required_equipment  String[]
   status              SOPStatus  @default(Procedure)
   isDraft             isDraft
-  author              String?
+  authorId              String
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
   priority            Priority @default(Medium_Priority)
   protocolSteps       ProtocolStep[]
   medications         Medication[]
   oxygen              Oxygen?
+  user    Credential @relation(fields: [authorId],references: [id])
 }
 
 model ProtocolStep {

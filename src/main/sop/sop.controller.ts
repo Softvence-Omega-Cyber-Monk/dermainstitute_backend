@@ -53,9 +53,9 @@ export class SopController {
     description: 'The data for creating a new SOP.',
   })
   async create(@Body() createSopDto: CreateSopDto, @Req() req: any) {
-    console.log(createSopDto);
     try {
-      return await this.sopService.create(req.user, createSopDto);
+      const user=req.user
+      return await this.sopService.create(user.userId, createSopDto);
     } catch (error) {
       throw new InternalServerErrorException(
         'Failed to create SOP due to an unexpected server issue.',
@@ -162,7 +162,7 @@ export class SopController {
   }
 
   @Delete(':id')
-    @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiBearerAuth()
   @Roles(Role.SuperAdmin,Role.Admin)
   @ApiOperation({

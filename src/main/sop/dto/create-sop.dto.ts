@@ -147,11 +147,6 @@ export class CreateSopDto {
   @IsEnum(SOPStatus)
   status?: SOPStatus;
 
-  @ApiProperty({ description: 'The author of the SOP.' })
-  @IsOptional()
-  @IsString()
-  author?: string;
-
   @ApiProperty({
     type: [CreateProtocolStepDto],
     description: 'A list of protocol steps.',

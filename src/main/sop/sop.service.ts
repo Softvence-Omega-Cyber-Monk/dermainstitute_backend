@@ -13,10 +13,9 @@ import { NotificationService } from '../notification/notification.service';
 export class SopService {
   constructor(private readonly prisma: PrismaService,private readonly notificationService: NotificationService,) {}
 
-async create(user: any, createSopDto: CreateSopDto) {
+async create(userId: string, createSopDto: CreateSopDto) {
   try {
     const { protocolSteps, medications, oxygen, ...sopData } = createSopDto;
-
     // --- Create SOP in DB ---
     const sop = await this.prisma.sOP.create({
       data: {
@@ -26,6 +25,7 @@ async create(user: any, createSopDto: CreateSopDto) {
         protocolSteps: { create: protocolSteps },
         medications: { create: medications },
         oxygen: oxygen ? { create: oxygen } : undefined,
+       authorId:userId
       } as any,
       include: {
         protocolSteps: true,
