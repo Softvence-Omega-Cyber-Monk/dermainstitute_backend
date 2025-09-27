@@ -23,4 +23,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Run migrations and start app
-CMD npx prisma migrate deploy && npm run start:prod
+CMD ["npm", "run", "start:migrate:prod"]
