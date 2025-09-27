@@ -16,7 +16,7 @@ export class NotificationService {
 
   constructor(
     private prisma: PrismaService,
-    @Inject(FirebaseAdmin) private readonly firebaseApp: admin.app.App, // ✅ Inject Firebase provider
+    @Inject(FirebaseAdmin) private readonly firebaseApp: admin.app.App,
   ) {}
 
   async broadcastToAll(payload: BroadcastPayload) {
