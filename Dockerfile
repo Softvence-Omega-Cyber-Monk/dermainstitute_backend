@@ -6,9 +6,10 @@ WORKDIR /app
 
 # Copy package files first
 COPY package*.json ./
+COPY prisma ./prisma/
 
 # Install dependencies
-RUN npm install --production
+RUN npm install 
 
 # Copy the rest of the code
 COPY . .
@@ -16,7 +17,7 @@ COPY . .
 # Generate Prisma client
 RUN npx prisma generate
 
-# Build app (for NestJS/Next.js/React)
+# Build app 
 RUN npm run build
 
 # Expose port (change if needed)
