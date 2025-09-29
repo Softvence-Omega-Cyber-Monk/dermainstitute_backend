@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: derma_pass
       POSTGRES_DB: derma_db
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - derma_pgdata_new:/var/lib/postgresql/data
     restart: always
