@@ -73,4 +73,21 @@ export class UpdateCredentialDto {
   })
   @ValidateIf(() => false)
   image?: any;
+
+  @ApiProperty({
+    description: 'Notification setting.',
+    required: false,
+    example: 'true',
+  })
+  @IsOptional()
+  @IsString()
+  notification?: string;
+  @ApiProperty({
+    description: 'Alert setting.',
+    required: false,
+    example: 'true',
+  })
+  @IsOptional()
+  @IsString()
+  emargencyAlert?: string;
 }

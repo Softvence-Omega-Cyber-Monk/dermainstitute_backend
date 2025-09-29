@@ -52,13 +52,17 @@ export class UserService {
         }
       }
 
+      const { notification, emargencyAlert, ...restDto } = updateCredentialDto;
+      
       const profile = await this.prisma.credential.update({
         where: {
           id: user.userId,
         },
         data: {
-          ...updateCredentialDto,
+          ...restDto,
           image: imageUrl,
+          notification: notification ? notification === 'true' : undefined,
+          emargencyAlert: emargencyAlert ? emargencyAlert === 'true' : undefined,
         },
       });
 
