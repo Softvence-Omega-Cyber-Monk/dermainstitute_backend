@@ -1,9 +1,12 @@
 services:
   app:
     build: .
+    image: imranwebstudio/derma_backend:latest
+    platform: linux/amd64
     container_name: derma_backend_app
     ports:
       - "3000:3000"
+      - "5555:5555"
     env_file:
       - .env
     depends_on:
@@ -11,6 +14,7 @@ services:
     volumes:
       - ./uploads:/app/uploads
     restart: always
+    command: sh -c "npx prisma studio --hostname 0.0.0.0 & npm run start"
 
   derma_db:
     image: postgres:15
