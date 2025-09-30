@@ -49,7 +49,7 @@ jobs:
             docker compose down
 
             # Pull the latest image from Docker Hub
-            docker compose -f compose.yaml pull
+            docker compose -f compose.yml pull
 
             # Start the container with the latest image
             docker compose up -d
